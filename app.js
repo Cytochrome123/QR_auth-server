@@ -104,3 +104,32 @@ app.get('/api/users', async (req, res) => {
     }
 })
 
+app.patch('/api/souvenier', async (req, res) => {
+    try {
+        const { email } = req.body;
+        console.log(email)
+        await User.findOne({email})
+        .then(async (user) => {
+            if(user.souvenier) {
+                res.status(200).json({msg: 'The user has already received one!'})
+            } else {
+                await User.findOneAndUpdate({email}, {souvenier: true}, {new: true})
+                res.status(200).json({msg: 'Just marked as recieved'})
+                
+            }
+        })
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.get('/api/collected', async (req, res) => {
+    try {
+        await User.find({souvenier: true})
+        .then(collected => {
+            res.status(200).json({data: collected})
+        })
+    } catch (err) {
+        throw err;
+    }
+})
