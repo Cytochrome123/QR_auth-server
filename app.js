@@ -18,6 +18,7 @@ mongoose.connect(process.env.MONGO_URL, (err, conn) => {
 		console.log('Mongo error ', err);
 	} else {
 		console.log('Mongoose Connection is Successful');
+        app.listen(8000, () => console.log('QR on!!!'));
 	}
 });
 
@@ -103,4 +104,3 @@ app.get('/api/users', async (req, res) => {
     }
 })
 
-app.listen(8000, () => console.log('QR on!!!'));
