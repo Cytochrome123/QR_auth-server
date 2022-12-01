@@ -193,7 +193,7 @@ app.patch('/api/souvenier2', async (req, res) => {
     }
 })
 
-app.get('/api/collected1', async (req, res) => {
+app.get('/api/collected', async (req, res) => {
     try {
         await User.find({souvenier: true})
         .then(collected => {
