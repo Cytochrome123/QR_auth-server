@@ -7,7 +7,12 @@ const userSchema = new mongoose.Schema({
 	email: { type: String, required: true },
 	password: { type: String, default: null },
 	code: { type: String, required: true },
-	souvenier: { type: Boolean, default: false },
+	souvenier: { 
+		type: [
+			{ no: String, collected: Boolean }
+		]
+	 },
+	category: { type: String, enum: ['Speaker', 'Participants', 'Team'] },
 	role: { type: String, enum: ['admin', 'user'], default: 'user'}
 })
 
