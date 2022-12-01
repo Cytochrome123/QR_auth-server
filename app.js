@@ -25,13 +25,13 @@ mongoose.connect(process.env.MONGO_URL, (err, conn) => {
 });
 
 app.use(express.json());
-app.use(cors({
-    origin: "https://qr-auth.vercel.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // allow session cookie from browser to pass through
-    optionsSuccessStatus: 200,
-}));
-// app.use(cors())
+// app.use(cors({
+//     origin: "https://qr-auth.vercel.app",
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     credentials: true, // allow session cookie from browser to pass through
+//     optionsSuccessStatus: 200,
+// }));
+app.use(cors())
 
 app.use(session({
     secret: 'hud',
