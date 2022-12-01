@@ -76,7 +76,7 @@ app.post('/api/signup', async (req, res) => {
                 res.json({msg: 'Acc created'})
            })
        } else {
-        res.json({msg: 'User exists!!!'})
+        res.json({msg: 'User exists!!!'});
        }
     } catch (err) {
         throw err;
@@ -135,7 +135,7 @@ app.get('/api/profile', passport.authenticate('jwt'), async (req, res) => {
     }
 })
 
-app.patch('/api/souvenier/:launchNo', async (req, res) => {
+app.patch('/api/souvenier1', async (req, res) => {
     try {
         console.log(req.params)
         const { email } = req.body;
@@ -143,26 +143,49 @@ app.patch('/api/souvenier/:launchNo', async (req, res) => {
         console.log(email)
         await User.findOne({email})
         .then(async (user) => {
-            if(user.souvenier[launchNo - 1].no) {
-                if(user.souvenier.collected) {
-                    res.status(200).json({msg: 'The user has already received one!'})
-                }
-            } else {
-                const update = {
-                    [souvenier.no]: launchNo,
-                    [souvenier.collected]: true
-                }
-                await User.findOneAndUpdate({email}, update)
-                res.status(200).json({msg: 'Just marked as recieved'})
-            }
-
-            // if(user.souvenier) {
-            //     res.status(200).json({msg: 'The user has already received one!'})
+            // if(user.souvenier[launchNo - 1].no) {
+            //     if(user.souvenier.collected) {
+            //         res.status(200).json({msg: 'The user has already received one!'})
+            //     }
             // } else {
-            //     await User.findOneAndUpdate({email}, {souvenier: true}, {new: true})
+            //     const update = {
+            //         [souvenier.no]: launchNo,
+            //         [souvenier.collected]: true
+            //     }
+            //     await User.findOneAndUpdate({email}, update)
             //     res.status(200).json({msg: 'Just marked as recieved'})
-                
             // }
+
+            if(user.souvenier) {
+                res.status(200).json({msg: 'The user has already received one!'})
+            } else {
+                await User.findOneAndUpdate({email}, {souvenier: true}, {new: true})
+                res.status(200).json({msg: 'Just marked as recieved'})
+                
+            }
+        })
+        .catch(e => console.log('Usernot found~'))
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.patch('/api/souvenier2', async (req, res) => {
+    try {
+        console.log(req.params)
+        const { email } = req.body;
+        const { launchNo } = req.params
+        console.log(email)
+        await User.findOne({email})
+        .then(async (user) => {
+
+            if(user.souvenier) {
+                res.status(200).json({msg: 'The user has already received one!'})
+            } else {
+                await User.findOneAndUpdate({email}, {souvenier: true}, {new: true})
+                res.status(200).json({msg: 'Just marked as recieved'})
+                
+            }
         })
         .catch(e => console.log('Usernot found~'))
     } catch (err) {
@@ -172,7 +195,7 @@ app.patch('/api/souvenier/:launchNo', async (req, res) => {
 
 app.get('/api/collected', async (req, res) => {
     try {
-        await User.find({[souvenier.collected]: true})
+        await User.find({souvenier: true})
         .then(collected => {
             res.status(200).json({data: collected})
         })
