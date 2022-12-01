@@ -13,9 +13,7 @@ const comparePassword = async (typedPassword, user, done) => {
     // let isSame = true;
 
     if(isSame) {
-        let update = { lastLogin: 100 };
-
-        await queries.update(User, {_id: user._id}, update, {lean: true});
+        
         return done(null, user);
     } else {
         return done(null, false, {msg: 'Incorrect password!!'});

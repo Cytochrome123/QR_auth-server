@@ -97,7 +97,7 @@ app.post('/api/login', (req, res, next) => {
                 if (err) throw err;
                 // let token = auth.token.createToken(user);
                 let private = 'hhh';
-                let userObj = {firstName, lastName, email}
+                let userObj = {firstName: user.firstName, lastName, email, role: user.role}
 
                 const token = jwt.sign(userObj, private);
                 // res.status(200).json({token: token});
