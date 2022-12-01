@@ -31,6 +31,7 @@ app.use(cors({
     credentials: true, // allow session cookie from browser to pass through
     optionsSuccessStatus: 200,
 }));
+// app.use(cors())
 
 app.use(session({
     secret: 'hud',
