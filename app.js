@@ -193,9 +193,20 @@ app.patch('/api/souvenier2', async (req, res) => {
     }
 })
 
-app.get('/api/collected', async (req, res) => {
+app.get('/api/collected1', async (req, res) => {
     try {
-        await User.find({souvenier: true})
+        await User.find({souvenier1: true})
+        .then(collected => {
+            res.status(200).json({data: collected})
+        })
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.get('/api/collected2', async (req, res) => {
+    try {
+        await User.find({souvenier2: true})
         .then(collected => {
             res.status(200).json({data: collected})
         })
