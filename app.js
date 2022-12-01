@@ -5,8 +5,10 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const QR = require("qrcode");
 const cors = require('cors');
+const session = require('express-session');
 
 const User = require('./model/user');
+const factory = require('./config/factory');
 
 const app = express();
 
@@ -24,6 +26,16 @@ mongoose.connect(process.env.MONGO_URL, (err, conn) => {
 
 app.use(express.json());
 app.use(cors());
+
+app.use(session({
+    secret: 'hud',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true },
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', async(req, res) => {
     // QR.toString('{name: Hud, age: 30}', (err, url) => {
@@ -45,12 +57,12 @@ app.post('/api/signup', async (req, res) => {
        const existed = await User.findOne({email})
        
        if(!existed) {
-            let userObj = {firstName, lastName, email, password};
+            let userObj = {firstName, lastName, email };
 
             let private = 'hhh';
             const token = jwt.sign(userObj, private);
             const code = await QR.toDataURL(token);
-            userObj = {...req.body, code};
+            userObj = {...req.body, password: factory.generateHashPassword(password), code};
 
             await new User(userObj).save()
            .then(user => {
@@ -81,8 +93,10 @@ app.post('/api/login', (req, res, next) => {
                 let private = 'hhh';
                 let userObj = {firstName, lastName, email}
 
-                // const token = jwt.sign(userObj, private);
+                const token = jwt.sign(userObj, private);
                 // res.status(200).json({token: token});
+
+                res.status(200).json({token, role: user.role})
             });
 
             
@@ -99,6 +113,17 @@ app.get('/api/users', async (req, res) => {
             res.json({users});
         })
 
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.get('/api/profile', passport.authenticate('jwt'), async (req, res) => {
+    try {
+        const { email } = req.user;
+        await User.findOne({email})
+        .then(user => res.status(200).json({user})).
+        catch(e => res.status(400).json({msg: 'Not found'}))
     } catch (err) {
         throw err;
     }

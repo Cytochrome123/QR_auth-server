@@ -4,6 +4,24 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const mongoose = require('mongoose');
 
 const User = require('../model/user');
+const factory = require('../config/factory');
+
+
+const comparePassword = async (typedPassword, user, done) => {
+    let isSame = factory.compareHashedPassword(typedPassword, user.password);
+
+    // let isSame = true;
+
+    if(isSame) {
+        let update = { lastLogin: 100 };
+
+        await queries.update(User, {_id: user._id}, update, {lean: true});
+        return done(null, user);
+    } else {
+        return done(null, false, {msg: 'Incorrect password!!'});
+    }
+};
+
 
 module.exports = (passport) => {
     // passport.use(new LocalStrategy(User.authenticate()));
@@ -16,20 +34,21 @@ module.exports = (passport) => {
             async (email, password, done) => {
             try {
                 console.log(email +' **')
-                let condition = { email };
-                let projection = {
-                    firstName:1,
-                    lastName:1,
-                    email:1,
-                    password:1
-                }
+                // let condition = { email };
+                // let projection = {
+                //     firstName:1,
+                //     lastName:1,
+                //     email:1,
+                //     password:1
+                // }
                 let options = {lean :true}
-                await queries.findOne(User,condition,projection, options)
+                await User.findOne({email})
                 .then(user => {
-                    return done(null, user)
+                    comparePassword(password, user, done)
+                    // return done(null, user)
                 })
                 .catch(err => {
-                    return done(null, false)
+                    return done(null, false, {msg: 'Err ooo'})
                 })
             } catch (err){
                 throw err;
@@ -50,10 +69,9 @@ module.exports = (passport) => {
 			},
 			async (jwtPayload, done) => {
                 console.log(jwtPayload)
-				let query = { email: mongoose.Types.ObjectId(jwtPayload.email) };
+				let query = { email: jwtPayload.email };
 
-				let user = await queries.findOne(
-					User,
+				let user = await User.findOne(
 					query,
 				);
 

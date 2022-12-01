@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
 	email: { type: String, required: true },
 	password: { type: String, default: null },
 	code: { type: String, required: true },
-	souvenier: { type: Boolean, default: false }
+	souvenier: { type: Boolean, default: false },
+	role: { type: String, enum: ['admin', 'user'], default: 'user'}
 })
 
 // userSchema.plugin(passportLocalMongoose)
