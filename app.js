@@ -156,7 +156,7 @@ app.patch('/api/souvenier1', async (req, res) => {
             //     res.status(200).json({msg: 'Just marked as recieved'})
             // }
 
-            if(user.souvenier) {
+            if(user.souvenier1) {
                 res.status(200).json({msg: 'The user has already received one!'})
             } else {
                 await User.findOneAndUpdate({email}, {souvenier1: true}, {new: true})
@@ -179,7 +179,7 @@ app.patch('/api/souvenier2', async (req, res) => {
         await User.findOne({email})
         .then(async (user) => {
 
-            if(user.souvenier) {
+            if(user.souvenier2) {
                 res.status(200).json({msg: 'The user has already received one!'})
             } else {
                 await User.findOneAndUpdate({email}, {souvenier2: true}, {new: true})
@@ -193,7 +193,7 @@ app.patch('/api/souvenier2', async (req, res) => {
     }
 })
 
-app.get('/api/collected', async (req, res) => {
+app.get('/api/collected1', async (req, res) => {
     try {
         await User.find({souvenier: true})
         .then(collected => {
