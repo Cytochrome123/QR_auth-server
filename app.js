@@ -172,7 +172,7 @@ app.patch('/api/souvenier/:launchNo', async (req, res) => {
 
 app.get('/api/collected', async (req, res) => {
     try {
-        await User.find({souvenier: true})
+        await User.find({[souvenier.collected]: true})
         .then(collected => {
             res.status(200).json({data: collected})
         })
