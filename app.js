@@ -157,10 +157,10 @@ app.patch('/api/souvenier1', async (req, res) => {
             // }
 
             if(user.souvenier1) {
-                res.status(200).json({msg: 'The user has already received one!'})
+                res.status(200).json({msg: 'Double Entry Alert! This user has been previously added'})
             } else {
                 await User.findOneAndUpdate({email}, {souvenier1: true}, {new: true})
-                res.status(200).json({msg: 'Just marked as recieved'})
+                res.status(200).json({msg: 'User Added Successfully'})
                 
             }
         })
@@ -180,10 +180,33 @@ app.patch('/api/souvenier2', async (req, res) => {
         .then(async (user) => {
 
             if(user.souvenier2) {
-                res.status(200).json({msg: 'The user has already received one!'})
+                res.status(200).json({msg: 'Double Entry Alert! This user has been previously added'})
             } else {
                 await User.findOneAndUpdate({email}, {souvenier2: true}, {new: true})
-                res.status(200).json({msg: 'Just marked as recieved'})
+                res.status(200).json({msg: 'User Added Successfully'})
+                
+            }
+        })
+        .catch(e => console.log('Usernot found~'))
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.patch('/api/souvenier3', async (req, res) => {
+    try {
+        console.log(req.params)
+        const { email } = req.body;
+        const { launchNo } = req.params
+        console.log(email)
+        await User.findOne({email})
+        .then(async (user) => {
+
+            if(user.souvenier3) {
+                res.status(200).json({msg: 'Double Entry Alert! This user has been previously added'})
+            } else {
+                await User.findOneAndUpdate({email}, {souvenier3: true}, {new: true})
+                res.status(200).json({msg: 'User Added Successfully'})
                 
             }
         })
@@ -205,6 +228,17 @@ app.get('/api/collected1', async (req, res) => {
 })
 
 app.get('/api/collected2', async (req, res) => {
+    try {
+        await User.find({souvenier2: true})
+        .then(collected => {
+            res.status(200).json({data: collected})
+        })
+    } catch (err) {
+        throw err;
+    }
+})
+
+app.get('/api/collected3', async (req, res) => {
     try {
         await User.find({souvenier2: true})
         .then(collected => {

@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 	//  },
 	souvenier1: {type: Boolean, default: false},
 	souvenier2: {type: Boolean, default: false},
-	category: { type: String, enum: ['Speaker', 'Participants', 'Team'] },
+	category: { type: String, enum: ['Speaker', 'Participants', 'Team'], default: 'Participant' },
 	role: { type: String, enum: ['admin', 'user'], default: 'user'}
 })
 
